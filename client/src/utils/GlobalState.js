@@ -16,6 +16,7 @@ const StoreProvider = ({ value = [], ...props }) => {
     return <Provider value={[state, dispatch]} {...props} />;
 };
 
+//hook
 const useStoreContext = () => {
     return useContext(StoreContext);
 };
