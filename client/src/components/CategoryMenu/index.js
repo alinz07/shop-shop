@@ -8,13 +8,16 @@ import {
 } from "../../utils/actions";
 
 function CategoryMenu() {
+    //when we usestorecontext, we receive the [state, dispatch] data our Storeprovider manages. this and any other
+    //component that have access to storeprovider(all because we wrapped all in it) can use any data in global state or update
+    //it using the dispatch function.
     const [state, dispatch] = useStoreContext();
     const { categories } = state;
 
     const { data: categoryData } = useQuery(QUERY_CATEGORIES);
 
     useEffect(() => {
-        //if category Data exists or has changed from the response of useQuery, then run dispatch()
+        //once the asynchronous usequery gets us category data, then run dispatch() to update state
         if (categoryData) {
             //execute our dispatch function with our action object indicating the type of action and the data to set our state for categories to
             dispatch({
@@ -22,6 +25,7 @@ function CategoryMenu() {
                 categories: categoryData.categories,
             });
         }
+        //If there are multiple items in the array, React will re-run the effect even if just one of them is different.
     }, [categoryData, dispatch]);
 
     const handleClick = (id) => {

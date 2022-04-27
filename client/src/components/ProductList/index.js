@@ -8,7 +8,7 @@ import { useStoreContext } from "../../utils/GlobalState";
 import { UPDATE_PRODUCTS } from "../../utils/actions";
 
 function ProductList() {
-    //retrieves the current global state object
+    //retrieves the current global state object and allows us to update it with dispatch
     const [state, dispatch] = useStoreContext();
 
     const { currentCategory } = state;
