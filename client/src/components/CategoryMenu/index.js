@@ -6,6 +6,7 @@ import {
     UPDATE_CATEGORIES,
     UPDATE_CURRENT_CATEGORY,
 } from "../../utils/actions";
+import { idbPromise } from "../../utils/helpers";
 
 function CategoryMenu() {
     //when we usestorecontext, we receive the [state, dispatch] data our Storeprovider manages. this and any other
@@ -14,7 +15,7 @@ function CategoryMenu() {
     const [state, dispatch] = useStoreContext();
     const { categories } = state;
 
-    const { data: categoryData } = useQuery(QUERY_CATEGORIES);
+    const { loading, data: categoryData } = useQuery(QUERY_CATEGORIES);
 
     useEffect(() => {
         //once the asynchronous usequery gets us category data, then run dispatch() to update state
@@ -24,9 +25,19 @@ function CategoryMenu() {
                 type: UPDATE_CATEGORIES,
                 categories: categoryData.categories,
             });
+            categoryData.categories.forEach((category) => {
+                idbPromise("categories", "put", category);
+            });
+        } else if (!loading) {
+            idbPromise("categories", "get").then((categories) => {
+                dispatch({
+                    type: UPDATE_CATEGORIES,
+                    categories: categories,
+                });
+            });
         }
         //If there are multiple items in the array, React will re-run the effect even if just one of them is different.
-    }, [categoryData, dispatch]);
+    }, [categoryData, loading, dispatch]);
 
     const handleClick = (id) => {
         dispatch({
